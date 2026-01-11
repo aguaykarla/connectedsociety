@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the ai exhibit — connected society</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><polygon points="0,0 0,16 4,12 7,18 9,17 6,11 12,11" fill="white" stroke="pink" stroke-width="1.5"/></svg>') 2 2, auto;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #ABC9FB;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #fff;
+            letter-spacing: 0.08em;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: '> ';
+            color: #ABC9FB;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ABC9FB;
+        }
+
+        .exhibit-container {
+            margin-top: 82px;
+            height: calc(100vh - 82px);
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #ABC9FB;
+            padding: 2rem;
+            max-width: 400px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-panel h1 {
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            color: #ABC9FB;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .info-panel h1::before {
+            content: '>>> ';
+        }
+
+        .info-panel p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            flex: 1;
+        }
+
+        .stat-label {
+            font-family: 'VT323', monospace;
+            font-size: 0.8rem;
+            color: #666;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-value {
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            color: #ABC9FB;
+            line-height: 1;
+        }
+
+        .last-updated {
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .filter-pill:hover,
+        .filter-pill.active {
+            background: #ABC9FB;
+            border-color: #ABC9FB;
+            transform: translateY(-2px);
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: #ABC9FB;
+            color: #fff;
+            border: none;
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+        }
+
+        .add-btn:hover {
+            background: #F461C6;
+            transform: translateY(-3px);
+        }
+
+        /* Success Banner */
+        .success-banner {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(149, 211, 2, 0.95);
+            color: #fff;
+            padding: 1.5rem 3rem;
+            border: 2px solid #95D302;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            z-index: 4000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .success-banner.show {
+            opacity: 1;
+        }
+
+        .ticker {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            border-top: 2px solid #ABC9FB;
+            padding: 1rem 0;
+            overflow: hidden;
+            z-index: 1500;
+        }
+
+        .ticker-content {
+            display: flex;
+            animation: scroll-ticker 90s linear infinite;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: #95D302;
+        }
+
+        .ticker-item {
+            padding: 0 3rem;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .ticker-item::before {
+            content: '>>> ';
+            color: #ABC9FB;
+        }
+
+        @keyframes scroll-ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .leaflet-interactive {
+            cursor: pointer;
+        }
+
+        .leaflet-interactive:hover {
+            filter: brightness(1.3);
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid #ABC9FB;
+            border-radius: 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            padding: 0;
+            max-width: 400px;
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            min-width: 300px;
+            max-width: 380px;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid #ABC9FB;
+            border-top: none;
+            border-left: none;
+        }
+
+        .popup-content {
+            padding: 1.5rem;
+            color: #fff;
+        }
+
+        .popup-count {
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+            color: #ABC9FB;
+            margin-bottom: 1rem;
+        }
+
+        .popup-submission {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #333;
+        }
+
+        .popup-submission:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .popup-category {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #F461C6;
+            font-size: 0.7rem;
+            color: #F461C6;
+            font-family: 'VT323', monospace;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.8rem;
+        }
+
+        .popup-prompt {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #fff;
+            font-style: italic;
+        }
+
+        .popup-prompt::before {
+            content: '"';
+            color: #ABC9FB;
+            font-size: 1.2rem;
+        }
+
+        .popup-prompt::after {
+            content: '"';
+            color: #ABC9FB;
+            font-size: 1.2rem;
+        }
+
+        .popup-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #888;
+            font-family: 'VT323', monospace;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            border: 3px solid #ABC9FB;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            color: #ABC9FB;
+            letter-spacing: 0.05em;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #ABC9FB;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ABC9FB;
+            box-shadow: 0 0 10px rgba(171, 201, 251, 0.3);
+        }
+
+        .form-note {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: #ABC9FB;
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'VT323', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .submit-btn:hover {
+            background: #F461C6;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 968px) {
+            .info-panel {
+                position: relative;
+                top: 0;
+                left: 0;
+                max-width: 100%;
+                margin: 1rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">CONNECTED SOCIETY</a>
+        <div class="nav-links">
+            <a href="about.html">about</a>
+            <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
+            <a href="get-involved.html">get involved</a>
+        </div>
+    </nav>
+
+    <div class="success-banner" id="successBanner">
+        ✓ submission received! it will appear after review.
+    </div>
+
+    <div class="exhibit-container">
+        <div class="info-panel">
+            <h1>THE AI EXHIBIT</h1>
+            <p>see how people around the world use AI to learn, create, and solve problems. All submissions are anonymous and location data is generalized to protect privacy.</p>
+            
+            <div class="stats-row">
+                <div class="stat">
+                    <div class="stat-label">SUBMISSIONS</div>
+                    <div class="stat-value" id="totalCount">—</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">COUNTRIES</div>
+                    <div class="stat-value" id="countryCount">—</div>
+                </div>
+            </div>
+
+            <div class="last-updated" id="lastUpdated">last updated: loading...</div>
+
+            <div class="filters">
+                <button class="filter-pill active" data-category="all">all</button>
+                <button class="filter-pill" data-category="education">education</button>
+                <button class="filter-pill" data-category="creativity">creativity</button>
+                <button class="filter-pill" data-category="language">language</button>
+                <button class="filter-pill" data-category="work">work</button>
+                <button class="filter-pill" data-category="other">other</button>
+            </div>
+
+            <button class="add-btn" onclick="openModal()">+ ADD YOUR STORY</button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <div class="ticker">
+        <div class="ticker-content" id="tickerContent">
+            <span class="ticker-item">loading stories from around the world...</span>
+        </div>
+    </div>
+
+    <div class="modal" id="submitModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>>>> ADD YOUR AI STORY</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="submissionForm">
+                <div class="form-group">
+                    <label>LOCATION (CITY/REGION)</label>
+                    <input type="text" id="locationInput" name="location" placeholder="start typing your city..." required autocomplete="off">
+                    <div id="locationSuggestions" style="
+                        background: rgba(10, 10, 10, 0.98); 
+                        border: 2px solid #ABC9FB; 
+                        max-height: 250px; 
+                        overflow-y: auto; 
+                        display: none; 
+                        position: absolute; 
+                        width: calc(100% - 6rem); 
+                        z-index: 1000;
+                        margin-top: 0.2rem;
+                    "></div>
+                </div>
+
+                <div class="form-group">
+                    <label>PROMPT OR WHAT WERE YOU TRYING TO DO?</label>
+                    <textarea name="prompt" placeholder="e.g., write an email, simplify a topic, create a plan..." required></textarea>
+                    <p class="form-note">share what you used AI for</p>
+                </div>
+
+                <div class="form-group">
+                    <label>CATEGORY</label>
+                    <select name="category" required>
+                        <option value="">choose one...</option>
+                        <option value="education">education/learning</option>
+                        <option value="creativity">creativity</option>
+                        <option value="language">language/translation</option>
+                        <option value="work">work/professional</option>
+                        <option value="other">other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>AI TOOL (OPTIONAL)</label>
+                    <input type="text" name="tool" placeholder="e.g., ChatGPT, Claude, Gemini...">
+                </div>
+
+                <div class="form-group">
+                    <label>AGE RANGE (OPTIONAL)</label>
+                    <select name="age">
+                        <option value="">prefer not to say</option>
+                        <option value="youth">youth (under 18)</option>
+                        <option value="adult">adult (18-65)</option>
+                        <option value="elder">elder (65+)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">SUBMIT</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let markerGroups = new Map();
+        let allSubmissions = [];
+
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhNyojjnHqW5VVHYGDT0nl4GzoOh-hC8339QZ2XfdYkpl_wLPKZEbjArO_iCOqp9EZ/exec';
+
+        async function loadSubmissionsFromSheets() {
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL + '?action=read');
+                const data = await response.json();
+                return (data || []).filter(sub => sub.status === 'approved');
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                return [];
+            }
+        }
+
+        function updateLastUpdated() {
+            const el = document.getElementById('lastUpdated');
+            const now = new Date();
+            el.textContent = 'last updated: ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function initMap() {
+            map = L.map('map', {
+                center: [20, 0],
+                zoom: 2.5,
+                minZoom: 2,
+                maxZoom: 10
+            });
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '©OpenStreetMap, ©CartoDB'
+            }).addTo(map);
+
+            allSubmissions = await loadSubmissionsFromSheets();
+            renderAllMarkers(allSubmissions);
+            updateStats(allSubmissions);
+            updateTicker(allSubmissions);
+            updateLastUpdated();
+
+            initFormHandlers();
+
+            setInterval(async () => {
+                const newData = await loadSubmissionsFromSheets();
+                
+                if (newData.length !== allSubmissions.length) {
+                    allSubmissions = newData;
+                    
+                    const activeCategory = document.querySelector('.filter-pill.active')?.dataset.category || 'all';
+                    const filtered = activeCategory === 'all'
+                        ? allSubmissions
+                        : allSubmissions.filter(s => s.category === activeCategory);
+                    
+                    renderAllMarkers(filtered);
+                    updateStats(allSubmissions);
+                    updateTicker(allSubmissions);
+                    updateLastUpdated();
+                }
+            }, 30000); // 30 seconds
+        }
+
+        function renderAllMarkers(submissions) {
+            markerGroups.forEach(group => map.removeLayer(group.marker));
+            markerGroups.clear();
+
+            const locationMap = new Map();
+            submissions.forEach(sub => {
+                const key = `${sub.lat.toFixed(2)},${sub.lng.toFixed(2)}`;
+                if (!locationMap.has(key)) {
+                    locationMap.set(key, []);
+                }
+                locationMap.get(key).push(sub);
+            });
+
+            locationMap.forEach((subs, key) => {
+                const firstSub = subs[0];
+                const marker = L.circleMarker([firstSub.lat, firstSub.lng], {
+                    radius: 7,
+                    fillColor: getCategoryColor(firstSub.category),
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(map);
+
+                const popupContent = `
+                    <div class="popup-content">
+                        ${subs.length > 1 ? `<div class="popup-count">${subs.length} submissions from this area</div>` : ''}
+                        ${subs.map(sub => `
+                            <div class="popup-submission">
+                                <div class="popup-category">${sub.category.toUpperCase()}</div>
+                                <div class="popup-prompt">${sub.prompt}</div>
+                                <div class="popup-meta">
+                                    <span>📍 ${sub.location}</span>
+                                    ${sub.tool ? `<span>🤖 ${sub.tool}</span>` : ''}
+                                    ${sub.age ? `<span>👤 ${sub.age}</span>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                marker.bindPopup(popupContent, {
+                    maxWidth: 400,
+                    maxHeight: 400,
+                    closeButton: true,
+                    autoClose: false,
+                    autoPan: true
+                });
+
+                marker.on('mouseover', function() {
+                    this.setStyle({ radius: 10, fillOpacity: 1 });
+                });
+
+                marker.on('mouseout', function() {
+                    if (!this.isPopupOpen()) {
+                        this.setStyle({ radius: 7, fillOpacity: 0.8 });
+                    }
+                });
+
+                markerGroups.set(key, { marker, submissions: subs });
+            });
+        }
+
+        function getCategoryColor(category) {
+            return {
+                education: '#2196f3',
+                creativity: '#ff1493',
+                language: '#95D302',
+                work: '#ABC9FB',
+                other: '#ff9800'
+            }[category] || '#ff1493';
+        }
+
+        function updateStats(submissions) {
+            document.getElementById('totalCount').textContent = submissions.length;
+            const countries = new Set(submissions.map(s => s.location.split(',').pop().trim()));
+            document.getElementById('countryCount').textContent = countries.size;
+        }
+
+        function updateTicker(submissions) {
+            const tickerContent = document.getElementById('tickerContent');
+            const items = submissions.slice(0, 15).map(sub =>
+                `<span class="ticker-item">${sub.location}: ${sub.prompt}</span>`
+            ).join('');
+            tickerContent.innerHTML = items + items;
+        }
+
+        // Filter functionality
+        document.querySelectorAll('.filter-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const category = btn.dataset.category;
+                const filtered = category === 'all'
+                    ? allSubmissions
+                    : allSubmissions.filter(s => s.category === category);
+                
+                renderAllMarkers(filtered);
+            });
+        });
+
+        function showSuccessBanner() {
+            const banner = document.getElementById('successBanner');
+            banner.classList.add('show');
+            setTimeout(() => {
+                banner.classList.remove('show');
+            }, 4000);
+        }
+
+        function initFormHandlers() {
+            let selectedLocation = null;
+            const locationInput = document.getElementById('locationInput');
+            const locationSuggestions = document.getElementById('locationSuggestions');
+            let searchTimeout;
+
+            locationInput.addEventListener('input', e => {
+                const query = e.target.value.trim();
+                if (query.length < 3) {
+                    locationSuggestions.style.display = 'none';
+                    return;
+                }
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(async () => {
+                    try {
+                        const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
+                        const data = await response.json();
+                        const results = data.features || [];
+                        
+                        locationSuggestions.innerHTML = results.map(r => {
+                            const p = r.properties;
+                            const c = r.geometry.coordinates;
+                            let name = p.name || p.city || '';
+                            if (p.city && p.name !== p.city) name += ', ' + p.city;
+                            if (p.state) name += ', ' + p.state;
+                            if (p.country) name += ', ' + p.country;
+                            return `<div data-lat="${c[1]}" data-lng="${c[0]}" data-name="${name}" style="padding:1rem;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.1);transition:all 0.2s" onmouseover="this.style.background='rgba(171,201,251,0.3)'" onmouseout="this.style.background='transparent'">📍 ${name}</div>`;
+                        }).join('');
+                        
+                        locationSuggestions.style.display = 'block';
+                        
+                        locationSuggestions.querySelectorAll('div').forEach(div => {
+                            div.onclick = () => {
+                                selectedLocation = { 
+                                    lat: parseFloat(div.dataset.lat), 
+                                    lng: parseFloat(div.dataset.lng), 
+                                    name: div.dataset.name 
+                                };
+                                locationInput.value = div.dataset.name;
+                                locationSuggestions.style.display = 'none';
+                            };
+                        });
+                    } catch (error) {
+                        console.error('Geocoding error:', error);
+                    }
+                }, 500);
+            });
+
+            document.getElementById('submissionForm').addEventListener('submit', async e => {
+                e.preventDefault();
+                
+                if (!selectedLocation) {
+                    alert('Please select a location from the dropdown');
+                    return;
+                }
+
+                const formData = new FormData(e.target);
+                
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        location: selectedLocation.name,
+                        lat: selectedLocation.lat,
+                        lng: selectedLocation.lng,
+                        category: formData.get('category'),
+                        prompt: formData.get('prompt'),
+                        tool: formData.get('tool') || 'Not specified',
+                        age: formData.get('age') || 'Not specified',
+                        status: 'pending'
+                    })
+                });
+
+                closeModal();
+                showSuccessBanner();
+                e.target.reset();
+                selectedLocation = null;
+            });
+        }
+
+        function openModal() {
+            document.getElementById('submitModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('submitModal').classList.remove('active');
+        }
+
+        window.addEventListener('load', initMap);
+    </script>
+</body>
+</html>

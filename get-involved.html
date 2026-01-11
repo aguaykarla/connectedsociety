@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get involved — connected society</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><polygon points="0,0 0,16 4,12 7,18 9,17 6,11 12,11" fill="white" stroke="black" stroke-width="1.5"/></svg>') 2 2, auto;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0a0a0a;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.08em;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: '> ';
+            color: #F461C6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '[';
+            opacity: 0;
+            margin-right: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a::after {
+            content: ']';
+            opacity: 0;
+            margin-left: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a:hover::after {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            color: #F461C6;
+        }
+
+        /* Full width hero */
+        .hero {
+            margin-top: 82px;
+            padding: 10rem 3rem;
+            background: #fafafa;
+            text-align: center;
+            border-bottom: 2px solid #0a0a0a;
+        }
+
+        .hero h1 {
+            font-size: clamp(4rem, 9vw, 10rem);
+            font-weight: 700;
+            line-height: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #4a4a4a;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Masonry-style cards */
+        .opportunities {
+            padding: 6rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border: 2px solid #0a0a0a;
+            padding: 3rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: #F461C6;
+            transform: scaleY(0);
+            transform-origin: top;
+            transition: transform 0.4s;
+        }
+
+        .card:nth-child(2)::before { background: #ABC9FB; }
+        .card:nth-child(3)::before { background: #95D302; }
+        .card:nth-child(4)::before { background: #F461C6; }
+
+        .card:hover {
+            transform: translateX(10px);
+            box-shadow: -10px 10px 0 rgba(0,0,0,0.05);
+        }
+
+        .card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .card-icon {
+            font-family: 'VT323', monospace;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #F461C6;
+        }
+
+        .card:nth-child(2) .card-icon { color: #ABC9FB; }
+        .card:nth-child(3) .card-icon { color: #95D302; }
+        .card:nth-child(4) .card-icon { color: #F461C6; }
+
+        .card h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+            margin-bottom: 2rem;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .card ul li {
+            font-size: 0.95rem;
+            color: #4a4a4a;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .card ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: #F461C6;
+            font-family: 'VT323', monospace;
+        }
+
+        .card-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #0a0a0a;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+
+        .card-btn:hover {
+            background: #F461C6;
+            transform: translateY(-2px);
+        }
+
+        /* Donate section - special treatment */
+        .donate-section {
+            padding: 8rem 3rem;
+            background: #0a0a0a;
+            color: #fff;
+            text-align: center;
+        }
+
+        .donate-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .donate-section h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(3rem, 6vw, 6rem);
+            margin-bottom: 2rem;
+            color: #F461C6;
+            letter-spacing: 0.08em;
+        }
+
+        .donate-section p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .donation-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .donation-amount {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .donation-amount:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #F461C6;
+            transform: scale(1.05);
+        }
+
+        .donation-amount .amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-family: 'VT323', monospace;
+        }
+
+        .donation-amount .impact {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .donate-btn {
+            padding: 1.5rem 3.5rem;
+            background: #F461C6;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            transition: all 0.3s;
+            border: 2px solid #F461C6;
+        }
+
+        .donate-btn:hover {
+            background: #fff;
+            color: #F461C6;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 20, 147, 0.3);
+        }
+
+        /* Partner section */
+        .partner-section {
+            padding: 8rem 3rem;
+            background: #fafafa;
+        }
+
+        .partner-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .partner-section h2 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .partner-section p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            margin-bottom: 3rem;
+            max-width: 800px;
+        }
+
+        .partner-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .partner-type {
+            padding: 2rem;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .partner-type:hover {
+            border-color: #0a0a0a;
+            transform: translateY(-5px);
+        }
+
+        .partner-type h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #F461C6;
+        }
+
+        .partner-type p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .contact-cta {
+            padding: 6rem 3rem;
+            background: #000000;
+            color: #fff;
+            text-align: center;
+        }
+
+        .contact-cta h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            margin-bottom: 2rem;
+            letter-spacing: 0.08em;
+        }
+
+        .contact-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+        }
+
+        .contact-btn {
+            padding: 1.3rem 3rem;
+            background: #fff;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            display: inline-block;
+            transition: all 0.3s;
+            border: 2px solid #fff;
+        }
+
+        .contact-btn:hover {
+            background: #0a0a0a;
+            color: #fff;
+            border-color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            padding: 2rem;
+            background: #0a0a0a;
+            color: #555;
+            text-align: center;
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            .cards-grid,
+            .donation-options,
+            .partner-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">CONNECTED SOCIETY</a>
+        <div class="nav-links">
+            <a href="about.html">about</a>
+            <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
+            <a href="get-involved.html">get involved</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>get involved</h1>
+        <p>Join us in building cognitive confidence through technology. Whether you have 2 hours or 20, there's a way for you to make an impact.</p>
+    </section>
+
+    <section class="opportunities">
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon">>> VOLUNTEER</div>
+                <h3>volunteer</h3>
+                <p>Help teach workshops, support participants, or assist with programs. No tech background required—just a willingness to learn and connect.</p>
+                <ul>
+                    <li>Workshop assistance</li>
+                    <li>Event support</li>
+                    <li>Community outreach</li>
+                    <li>Admin help</li>
+                </ul>
+                <a href="#" class="card-btn">apply to volunteer</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">>> MENTOR</div>
+                <h3>mentor</h3>
+                <p>Guide youth or elders through their learning journey. Share your skills in tech, creativity, education—or just life experience.</p>
+                <ul>
+                    <li>One-on-one mentoring</li>
+                    <li>Small group sessions</li>
+                    <li>Project guidance</li>
+                    <li>Flexible commitment</li>
+                </ul>
+                <a href="#" class="card-btn">become a mentor</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">>> TEACH</div>
+                <h3>lead a workshop</h3>
+                <p>Have expertise to share? Lead a workshop on digital literacy, creative tools, cognitive techniques, or any skill that empowers others.</p>
+                <ul>
+                    <li>Design curriculum</li>
+                    <li>Lead sessions</li>
+                    <li>Share your expertise</li>
+                    <li>Build community</li>
+                </ul>
+                <a href="#" class="card-btn">propose a workshop</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">>> JOIN</div>
+                <h3>join the team</h3>
+                <p>Become part of the core team building Connected Society. We're looking for people passionate about education, technology, and community.</p>
+                <ul>
+                    <li>Program development</li>
+                    <li>Community building</li>
+                    <li>Operations support</li>
+                    <li>Strategic planning</li>
+                </ul>
+                <a href="#" class="card-btn">see open roles</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="donate-section">
+        <div class="donate-container">
+            <h2>>> DONATE</h2>
+            <p>Your contribution keeps our programs free and accessible. 100% of donations go directly to workshops, materials, and community support.</p>
+            
+            <div class="donation-options">
+                <div class="donation-amount">
+                    <div class="amount">$25</div>
+                    <div class="impact">workshop materials for 5 students</div>
+                </div>
+                <div class="donation-amount">
+                    <div class="amount">$50</div>
+                    <div class="impact">one full workshop session</div>
+                </div>
+                <div class="donation-amount">
+                    <div class="amount">$100</div>
+                    <div class="impact">tech access for an entire family</div>
+                </div>
+                <div class="donation-amount">
+                    <div class="amount">$250</div>
+                    <div class="impact">month of programs for youth</div>
+                </div>
+            </div>
+
+            <a href="#" class="donate-btn">make a donation</a>
+        </div>
+    </section>
+
+    <section class="partner-section">
+        <div class="partner-container">
+            <h2>partner with us</h2>
+            <p>We're looking for schools, community organizations, and businesses to collaborate with us in bringing digital empowerment to more people.</p>
+            
+            <div class="partner-types">
+                <div class="partner-type">
+                    <h4>schools</h4>
+                    <p>bring our programs to your students and community</p>
+                </div>
+                <div class="partner-type">
+                    <h4>organizations</h4>
+                    <p>collaborate on workshops and community initiatives</p>
+                </div>
+                <div class="partner-type">
+                    <h4>businesses</h4>
+                    <p>Sponsor programs or provide resources and space</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-cta">
+        <h2>>> QUESTIONS?</h2>
+        <p>we'd love to hear from you!</p>
+        <a href="mailto:info@connectedsociety.org" class="contact-btn">contact us</a>
+    </section>
+
+    <footer>
+        <p>© 2025 connected society | website coded by karla aguay </p>
+    </footer>
+</body>
+</html>

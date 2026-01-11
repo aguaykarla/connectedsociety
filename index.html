@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>connected society</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fafafa;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><polygon points="0,0 0,16 4,12 7,18 9,17 6,11 12,11" fill="white" stroke="black" stroke-width="1.25"/></svg>') 2 2, auto;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 3px,
+                rgba(0,0,0,0.008) 3px,
+                rgba(0,0,0,0.008) 6px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0a0a0a;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.04em;
+        }
+
+        .logo::before {
+            content: '> ';
+            color: #F461C6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '[';
+            opacity: 0;
+            margin-right: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a::after {
+            content: ']';
+            opacity: 0;
+            margin-left: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a:hover::after {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            color: #F461C6;
+        }
+
+        .hero {
+            margin-top: 82px;
+            min-height: 88vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border-bottom: 2px solid #0a0a0a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .grid-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 50px, rgba(0,0,0,0.03) 50px, rgba(0,0,0,0.03) 51px),
+                repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(0,0,0,0.03) 50px, rgba(0,0,0,0.03) 51px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(4.5rem, 11vw, 13rem);
+            font-weight: 700;
+            line-height: 0.9;
+            color: #0a0a0a;
+            margin-bottom: 2rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero h1::after {
+            content: '_';
+            animation: cursor-blink 1.5s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-accent {
+            font-family: 'VT323', monospace;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: #F461C6;
+            letter-spacing: 0.15em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-accent::before {
+            content: '///';
+            margin-right: 0.5rem;
+        }
+
+        .hero-accent::after {
+            content: '///';
+            margin-left: 0.5rem;
+        }
+
+        .hero-tagline {
+            font-size: 1.15rem;
+            color: #4a4a4a;
+            max-width: 650px;
+            margin: 2rem auto 0;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .about {
+            padding: 10rem 3rem;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .about-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 0.5fr 1fr;
+            gap: 5rem;
+        }
+
+        .about-label {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            color: #8f8f8f;
+            letter-spacing: 0.1em;
+            position: sticky;
+            top: 150px;
+        }
+
+        .about-label::before {
+            content: '>> ';
+            color: #82b0ff;
+            animation: fade-blink 2s ease-in-out infinite;
+        }
+
+        @keyframes fade-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        .about-content h2 {
+            font-size: clamp(2.2rem, 4.5vw, 4.5rem);
+            line-height: 1.25;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            color: #0a0a0a;
+            letter-spacing: -0.01em;
+        }
+
+        .about-content h2 strong {
+            font-weight: 700;
+            position: relative;
+        }
+
+        .about-content h2 strong::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 20, 147, 0.2);
+            z-index: -1;
+        }
+
+        .about-content h2 em {
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            color: #82b0ff;
+        }
+
+        .pillars {
+            padding: 8rem 3rem;
+            background: #fff;
+            border-top: 2px solid #0a0a0a;
+            border-bottom: 2px solid #0a0a0a;
+            position: relative;
+        }
+
+        .pillars-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .pillars h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.08em;
+            position: relative;
+            display: inline-block;
+        }
+
+        .pillars h2::before {
+            content: '>';
+            color: #95D302;
+            margin-right: 0.5rem;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .pillar {
+            padding: 3rem 2.5rem;
+            border: 1px solid #e0e0e0;
+            background: #fff;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pillar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 30px 30px 0;
+            border-color: transparent #fafafa transparent transparent;
+            transition: all 0.3s;
+        }
+
+        .pillar:hover::after {
+            border-color: transparent #F461C6 transparent transparent;
+        }
+
+        .pillar:nth-child(2):hover::after {
+            border-color: transparent #ABC9FB transparent transparent;
+        }
+
+        .pillar:nth-child(3):hover::after {
+            border-color: transparent #95D302 transparent transparent;
+        }
+
+        .pillar:hover {
+            background: #fafafa;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .pillar-num {
+            font-family: 'VT323', monospace;
+            font-size: 2.5rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .pillar:hover .pillar-num {
+            color: #F461C6;
+        }
+
+        .pillar:nth-child(2):hover .pillar-num {
+            color: #ABC9FB;
+        }
+
+        .pillar:nth-child(3):hover .pillar-num {
+            color: #95D302;
+        }
+
+        .pillar h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            color: #0a0a0a;
+            letter-spacing: -0.01em;
+        }
+
+        .pillar p {
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: #4a4a4a;
+            font-weight: 300;
+        }
+
+        .who {
+            padding: 10rem 3rem;
+            background: #fafafa;
+            position: relative;
+        }
+
+        .who-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .who h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.08em;
+        }
+
+        .who h2::before {
+            content: '>';
+            color: #F461C6;
+            margin-right: 0.5rem;
+        }
+
+        .who-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+        }
+
+        .who-item {
+            padding: 2.5rem;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .who-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #F461C6, transparent);
+            transition: left 0.5s;
+        }
+
+        .who-item:hover::before {
+            left: 100%;
+        }
+
+        .who-item:hover {
+            border-color: #0a0a0a;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .who-item h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #0a0a0a;
+            letter-spacing: -0.01em;
+            transition: color 0.3s;
+        }
+
+        .who-item:nth-child(1):hover h4 { color: #F461C6; }
+        .who-item:nth-child(2):hover h4 { color: #ABC9FB; }
+        .who-item:nth-child(3):hover h4 { color: #95D302; }
+        .who-item:nth-child(4):hover h4 { color: #F461C6; }
+
+        .who-item p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+            font-weight: 300;
+        }
+
+        .cta {
+            padding: 10rem 3rem;
+            background: #0a0a0a;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(3.5rem, 8vw, 8rem);
+            margin-bottom: 3rem;
+            letter-spacing: 0.08em;
+            color: #ffffff;
+        }
+
+        .cta h2::before {
+            content: '>';
+            margin-right: 0.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.3rem 3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+            position: relative;
+        }
+
+        .btn::before {
+            content: '>';
+            position: absolute;
+            left: 1rem;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+            left: 1.5rem;
+        }
+
+        .btn-primary {
+            background: #fff;
+            color: #0a0a0a;
+            border: 2px solid #fff;
+        }
+
+        .btn-primary:hover {
+            background: #ABC9FB;
+            color: #fff;
+            border-color: #ABC9FB;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(20, 149, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            color: #0a0a0a;
+            transform: translateY(-3px);
+        }
+
+
+        footer {
+            padding: 5rem 3rem 3rem;
+            background: #0a0a0a;
+            color: #fff;
+            border-top: 1px solid #333;
+        }
+
+        .footer-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-brand p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #888;
+            font-weight: 300;
+        }
+
+        footer h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+
+        footer a {
+            display: block;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: all 0.3s;
+            position: relative;
+            padding-left: 0;
+        }
+
+        footer a::before {
+            content: '>';
+            position: absolute;
+            left: -15px;
+            opacity: 0;
+            transition: all 0.3s;
+            color: #95D302;
+        }
+
+        footer a:hover::before {
+            opacity: 1;
+            left: 0;
+        }
+
+        footer a:hover {
+            color: #95D302;
+            padding-left: 20px;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid #333;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #555;
+            font-family: 'VT323', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 968px) {
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .about-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .pillars-grid,
+            .who-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">CONNECTED SOCIETY</div>
+        <div class="nav-links">
+            <a href="about.html">about</a>
+            <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
+            <a href="get-involved.html">get involved</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="grid-bg"></div>
+        <div class="hero-content">
+            <h1>connected<br>society</h1>
+            <p class="hero-accent">connecting generations through technology</p>
+            <p class="hero-tagline">using AI and digital tools to help people learn, think, and create. connecting past and future through educational empowerment.</p>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-container">
+            <div class="about-label">README</div>
+            <div class="about-content">
+                <h2>we teach <strong>practical AI & digital skills</strong>—focusing on <em>how your brain works</em>, then giving you tools and understanding to work with it.</h2>
+            </div>
+        </div>
+    </section>
+
+    <section class="pillars" id="programs">
+        <div class="pillars-container">
+            <h2>OUR PILLARS</h2>
+            <div class="pillars-grid">
+                <div class="pillar">
+                    <div class="pillar-num">01</div>
+                    <h3>brain-friendly learning</h3>
+                    <p>memory techniques, organization systems, study strategies—powered by AI tools. we teach you how to use technology so your brain actually retains information.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">02</div>
+                    <h3>intergenerational confidence</h3>
+                    <p>youth and elders learning from each other. tech basics meet patience and communication. everyone gains confidence navigating digital spaces together.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-num">03</div>
+                    <h3>creative tools</h3>
+                    <p>using AI as a guide for expression—music, film, art, storytelling. building websites for local businesses. prototyping ideas. innovation meets technology.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="who">
+        <div class="who-container">
+            <h2>WHO WE SERVE</h2>
+            <div class="who-grid">
+                <div class="who-item">
+                    <h4>youth</h4>
+                    <p>students learning confidence through tech tools and creative expression.</p>
+                </div>
+                <div class="who-item">
+                    <h4>older adults</h4>
+                    <p>navigating technology with confidence in a supportive, intergenerational environment.</p>
+                </div>
+                <div class="who-item">
+                    <h4>underserved communitiess</h4>
+                    <p>afghan girls, hispanic families, anyone who needs access to digital literacy and creative tools.</p>
+                </div>
+                <div class="who-item">
+                    <h4>small businesses</h4>
+                    <p>free website design for local shops and restaurants in our community</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="involved">
+        <h2>READY TO CONNECT?</h2>
+        <div class="cta-buttons">
+            <a href="#programs" class="btn btn-primary">explore programs</a>
+            <a href="#exhibit" class="btn btn-secondary">view ai exhibit</a>
+            <a href="mailto:info@connectedsociety.org" class="btn btn-secondary">get in touch</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <h3>CONNECTED SOCIETY</h3>
+                <p>teaching people how to use technology for creativity, innovation, and understanding. based in pennsylvania.</p>
+            </div>
+            <div>
+                <h4>navigate</h4>
+                <a href="about.html">about</a>
+                <a href="programs.html">programs</a>
+                <a href="#exhibit">ai exhibit</a>
+                <a href="#involved">get involved</a>
+            </div>
+            <div>
+                <h4>connect</h4>
+                <a href="mailto:info@connectedsociety.org">email</a>
+                <a href="#">instagram</a>
+                <a href="#">tiktok</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 connected society | website coded by karla aguay ★ </p>
+        </div>
+    </footer>
+</body>
+</html>

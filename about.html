@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>about — connected society</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><polygon points="0,0 0,16 4,12 7,18 9,17 6,11 12,11" fill="white" stroke="black" stroke-width="1.25"/></svg>') 2 2, auto;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0a0a0a;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.04em;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: '> ';
+            color: #95D302;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '[';
+            opacity: 0;
+            margin-right: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a::after {
+            content: ']';
+            opacity: 0;
+            margin-left: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a:hover::after {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            color: #95D302;
+        }
+
+        .hero {
+            margin-top: 82px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            min-height: 85vh;
+        }
+
+        .hero-double {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            min-height: 49vh;
+        }
+
+        .hero-left {
+            padding: 8rem 5rem 5rem 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .hero-label {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            color: #888;
+            letter-spacing: 0.15em;
+            margin-bottom: 2rem;
+        }
+
+        .hero-label::before {
+            content: '// ';
+            color: #95D302;
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 7vw, 8rem);
+            font-weight: 700;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            max-width: 600px;
+        }
+
+        .hero-right {
+            background: #00000064;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-right::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #e9e9e9
+                /*change to image eventually */
+        }
+
+        .ticker {
+            background: #94d30231;
+            color: #95D302;
+            padding: 1.5rem 0;
+            overflow: hidden;
+            border-top: 2px solid #95D302;
+            border-bottom: 2px solid #95D302;
+        }
+
+        .ticker-content {
+            display: flex;
+            animation: scroll 30s linear infinite;
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 0.1em;
+        }
+
+        .ticker-content span {
+            padding: 0 3rem;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .story-section {
+            padding: 10rem 3rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .story-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .story-sticky {
+            position: sticky;
+            top: 100px;
+        }
+
+        .story-num {
+            font-family: 'VT323', monospace;
+            font-size: 8rem;
+            color: rgba(0, 0, 0, 0.1);
+            line-height: 1;
+            margin-bottom: 2rem;
+        }
+
+        .story-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            letter-spacing: -0.01em;
+        }
+
+        .story-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .story-block {
+            padding: 3rem;
+            background: #fafafa;
+            border-left: 4px solid #F461C6;
+            transition: all 0.3s;
+        }
+
+        .story-block:nth-child(2) {
+            border-left-color: #ABC9FB;
+            margin-left: 3rem;
+        }
+
+        .story-block:nth-child(3) {
+            border-left-color: #95D302;
+        }
+
+        .story-block:hover {
+            transform: translateX(10px);
+            background: #fff;
+        }
+
+        .story-block h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .story-block p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+        }
+
+        .values-section {
+            padding: 3rem 3rem;
+            background: #ffffff;
+            color: #fff;
+        }
+
+        .values-section-black {
+            padding: 2rem 3rem;
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .values-container {
+            display: flex;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 6rem;
+        }
+
+        .values-title {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 5rem;
+            letter-spacing: 0.08em;
+            color: #F461C6;
+        }
+
+        .values-title-center {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(3rem, 5vw, 4rem);
+            margin-bottom: 0.10rem;
+            letter-spacing: 0.01em;
+            text-align: right;
+            margin-left: 14rem;
+            margin-top: 2rem;
+            color: #000000;
+        }
+
+        .values-title-white {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 0.10rem;
+            margin-right: 7rem;
+            letter-spacing: 0.08em;
+            text-align: right;
+            color: #8a5151;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 200px);
+            gap: 1.5rem;
+        }
+
+        .bento-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .bento-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #F461C6;
+        }
+
+        .bento-item:nth-child(1) {
+            grid-column: span 2;
+        }
+
+        .bento-item:nth-child(3) {
+            grid-column: span 2;
+        }
+
+        .bento-item:nth-child(5) {
+            grid-column: span 2;
+            grid-row: span 2;
+            background: #F461C6;
+            border-color: #F461C6;
+        }
+
+        .bento-item h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            font-family: 'VT323', monospace;
+            letter-spacing: 0.05em;
+        }
+
+        .bento-item p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .cta {
+            padding: 8rem 3rem;
+            background: #000000;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(3rem, 7vw, 7rem);
+            margin-bottom: 3rem;
+            letter-spacing: 0.08em;
+            color: #fff;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1.3rem 3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            letter-spacing: 0.05em;
+            background: #fff;
+            color: #000000;
+            border: 2px solid #fff;
+        }
+
+        .btn:hover {
+            background: #0a0a0a;
+            color: #fff;
+            border-color: #ffffff;
+            transform: translateY(-3px);
+        }
+
+        footer {
+            padding: 3rem;
+            background: #0a0a0a;
+            color: #888;
+            text-align: center;
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+        }
+
+        .founder-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .founder-info {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 5rem;
+            align-items: start;
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .founder-name-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .founder-role {
+            font-family: 'VT323', monospace;
+            font-size: 1.8rem;
+            letter-spacing: 0.08em;
+            color: #95D302;
+            margin-bottom: 2rem;
+        }
+
+        .founder-bio {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.25rem;
+            line-height: 1.8;
+            color: #000000;
+            max-width: 520px;
+        }
+
+        .file-image {
+            width: 35%;
+            aspect-ratio: 1;
+            background: #e0e0e0;
+            border: 2px solid #95D302;
+            margin-bottom: 1rem;
+            height: 30rem;
+            margin-top: 0.1rem;
+        }
+
+        .founder-image {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .me-image {
+            width: 100%;
+            max-width: 320px;
+            aspect-ratio: 1;
+            background: #e0e0e0;
+            border: 2px solid #95D302;
+        }
+
+        .button {
+            font-family: 'VT323', monospace;
+            padding: 1rem 4rem;
+            background: #F461C6;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            font-size: 155%;
+            text-align: center;
+            float: right;
+            margin-top: 5rem;
+            margin-right: 12rem;
+        }
+
+        @media (max-width: 968px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-right {
+                min-height: 200px;
+            }
+
+            .story-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .bento-item {
+                grid-column: span 1 !important;
+                grid-row: span 1 !important;
+            }
+        
+            .founder-info {
+                grid-template-columns: 1fr;
+            }
+
+            .founder-image {
+                justify-content: flex-start;
+                margin-top: 3rem;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">CONNECTED SOCIETY</a>
+        <div class="nav-links">
+            <a href="about.html">about</a>
+            <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
+            <a href="get-involved.html">get involved</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-left">
+            <div class="hero-label">ABOUT US</div>
+            <h1>our story</h1>
+            <p class="hero-text">about blurb</p>
+            <!--<a href="#" class="button">READ OUR STATEMENT</a>-->
+        </div>
+        <div class="hero-right"></div>
+    </section>
+
+    <div class="ticker">
+        <div class="ticker-content">
+            <span>>>> EDUCATIONAL EMPOWERMENT</span>
+            <span>>>> INTERGENERATIONAL LEARNING</span>
+            <span>>>> CREATIVE TOOLS</span>
+            <span>>>> COMMUNITY DRIVEN</span>
+            <span>>>> EDUCATIONAL EMPOWERMENT</span>
+            <span>>>> INTERGENERATIONAL LEARNING</span>
+            <span>>>> CREATIVE TOOLS</span>
+            <span>>>> COMMUNITY DRIVEN</span>
+        </div>
+    </div>
+
+<section class="values-section-black">
+    <div class="founder-wrapper">
+        <div class="founder-info">
+            <div class="founder-text">
+                <h3 class="founder-name-text">karla aguay</h3>
+                <div class="founder-role">FOUNDER</div>
+
+                <p class="founder-bio">bio lol</p>
+            </div>
+            <div class="founder-image">
+                <div class="me-image"></div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+    <section class="cta">
+        <h2>>> JOIN THE MOVEMENT</h2>
+        <div class="cta-buttons">
+            <a href="programs.html" class="btn">explore programs</a>
+            <a href="get-involved.html" class="btn">get involved</a>
+            <a href="mailto:info@connectedsociety.org" class="btn">contact us</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 connected society | website coded by karla aguay ★</p>
+    </footer>
+</body>
+</html>

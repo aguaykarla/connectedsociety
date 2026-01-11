@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>programs — connected society</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Inter:wght@300;400;500;600;700&family=Libre+Baskerville:ital@1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fafafa;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><polygon points="0,0 0,16 4,12 7,18 9,17 6,11 12,11" fill="white" stroke="black" stroke-width="1.5"/></svg>') 2 2, auto;
+        }
+
+        /* Shared nav styles */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #0a0a0a;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'VT323', monospace;
+            font-size: 1.5rem;
+            color: #0a0a0a;
+            letter-spacing: 0.08em;
+            text-decoration: none;
+        }
+
+        .logo::before {
+            content: '> ';
+            color: #ABC9FB;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: '[';
+            opacity: 0;
+            margin-right: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a::after {
+            content: ']';
+            opacity: 0;
+            margin-left: 0.3rem;
+            transition: opacity 0.3s;
+            font-family: 'VT323', monospace;
+        }
+
+        .nav-links a:hover::before,
+        .nav-links a:hover::after {
+            opacity: 1;
+        }
+
+        .nav-links a:hover {
+            color: #ABC9FB;
+        }
+
+        .programs-layout {
+            margin-top: 82px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: calc(100vh - 82px);
+        }
+
+        .sidebar {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 4rem 2rem;
+            position: sticky;
+            top: 82px;
+            height: calc(100vh - 82px);
+            overflow-y: auto;
+            border-right: 2px solid #0a0a0a;
+        }
+
+        .sidebar-title {
+            font-family: 'VT323', monospace;
+            font-size: 1.3rem;
+            color: #ABC9FB;
+            margin-bottom: 2rem;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-nav a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: block;
+            padding-left: 1rem;
+            border-left: 2px solid transparent;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            color: #fff;
+            border-left-color: #ABC9FB;
+            padding-left: 1.5rem;
+        }
+
+        .content-area {
+            background: #fff;
+        }
+
+        /* Hero section */
+        .page-hero {
+            padding: 6rem 5rem;
+            background: #fafafa;
+            border-bottom: 2px solid #0a0a0a;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(3.5rem, 7vw, 7rem);
+            font-weight: 700;
+            line-height: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .page-hero p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            color: #4a4a4a;
+            max-width: 700px;
+        }
+
+
+        .program-section {
+            padding: 6rem 5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .program-section:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .program-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 3rem;
+        }
+
+        .program-num {
+            font-family: 'VT323', monospace;
+            font-size: 5rem;
+            color: #abc8fb4d;
+            line-height: 1;
+        }
+
+        .program-title {
+            flex: 1;
+            padding-left: 3rem;
+        }
+
+        .program-title h2 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .program-title .label {
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+            color: #ABC9FB;
+            letter-spacing: 0.1em;
+        }
+
+        .program-content {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+        }
+
+        .program-description p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #4a4a4a;
+            margin-bottom: 1.5rem;
+        }
+
+        .program-details {
+            background: #fff;
+            padding: 2.5rem;
+            border: 2px solid #0a0a0a;
+        }
+
+        .program-section:nth-child(even) .program-details {
+            background: #fafafa;
+        }
+
+        .detail-item {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-item h4 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 0.8rem;
+        }
+
+        .detail-item p {
+            font-size: 0.95rem;
+            color: #0a0a0a;
+            font-weight: 500;
+        }
+
+        .detail-item ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-item ul li {
+            font-size: 0.95rem;
+            color: #0a0a0a;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+        }
+
+        .detail-item ul li::before {
+            content: '> ';
+            color: #ABC9FB;
+            font-family: 'VT323', monospace;
+            margin-right: 0.5rem;
+        }
+
+        .program-cta {
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1.2rem 2.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+            background: #0a0a0a;
+            color: #fff;
+            border: 2px solid #0a0a0a;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #ABC9FB;
+            border-color: #ABC9FB;
+            transform: translateY(-2px);
+        }
+
+        /* Footer CTA */
+        .footer-cta {
+            padding: 8rem 5rem;
+            background: #0a0a0a;
+            color: #fff;
+            text-align: center;
+        }
+
+        .footer-cta h2 {
+            font-family: 'VT323', monospace;
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            margin-bottom: 2rem;
+            color: #ffffff;
+            letter-spacing: 0.08em;
+        }
+
+        .footer-cta p {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-light {
+            background: #fff;
+            color: #0a0a0a;
+            border-color: #fff;
+        }
+
+        .btn-light:hover {
+            background: #000000;
+            color: #fff;
+            border-color: #ffffff;
+        }
+
+        footer {
+            padding: 2rem;
+            background: #0a0a0a;
+            color: #555;
+            text-align: center;
+            font-family: 'VT323', monospace;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            .programs-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: relative;
+                top: 0;
+                height: auto;
+            }
+
+            .page-hero,
+            .program-section {
+                padding: 3rem 2rem;
+            }
+
+            .program-content {
+                grid-template-columns: 1fr;
+            }
+
+            .program-header {
+                flex-direction: column;
+            }
+
+            .program-title {
+                padding-left: 0;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">CONNECTED SOCIETY</a>
+        <div class="nav-links">
+            <a href="about.html">about</a>
+            <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
+            <a href="get-involved.html">get involved</a>
+        </div>
+    </nav>
+
+    <div class="programs-layout">
+        <aside class="sidebar">
+            <div class="sidebar-title">>> PROGRAMS</div>
+            <ul class="sidebar-nav">
+                <li><a href="#workshops" class="active">workshops</a></li>
+                <li><a href="#creative-projects">creative projects</a></li>
+                <li><a href="#web-design">web design</a></li>
+                <li><a href="#language-support">language support</a></li>
+            </ul>
+        </aside>
+
+        <div class="content-area">
+            <section class="page-hero">
+                <h1>our programming</h1>
+                <p>Hands-on learning experiences designed to build cognitive confidence through technology. All programs are free and open to our community.</p>
+            </section>
+
+            <section class="program-section" id="workshops">
+                <div class="program-header">
+                    <div class="program-num">01</div>
+                    <div class="program-title">
+                        <div class="label">CORE PROGRAM</div>
+                        <h2>workshops</h2>
+                    </div>
+                </div>
+                <div class="program-content">
+                    <div class="program-description">
+                        <p>Interactive sessions teaching practical AI and digital literacy skills for youth, elders, ESL families, and underserved communities. We focus on brain-friendly techniques that help you actually retain what you learn.</p>
+                        <p>Workshops pair different generations together—elders learn tech basics while youth develop communication and teaching skills. Everyone gains confidence.</p>
+                        <div class="program-cta">
+                            <a href="#" class="btn">sign up for next workshop</a>
+                        </div>
+                    </div>
+                    <div class="program-details">
+                        <div class="detail-item">
+                            <h4>Format</h4>
+                            <p>in-person (Wyomissing, PA) & Online</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Duration</h4>
+                            <p>around 60 minutes</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Topics Covered</h4>
+                            <ul>
+                                <li>Memory techniques</li>
+                                <li>Organization systems</li>
+                                <li>Study strategies</li>
+                                <li>AI tool basics</li>
+                                <li>Digital communication</li>
+                            </ul>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Who It's For</h4>
+                            <p>All ages, all skill levels</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="program-section" id="creative-projects">
+                <div class="program-header">
+                    <div class="program-num">02</div>
+                    <div class="program-title">
+                        <div class="label">HANDS-ON</div>
+                        <h2>creative projects</h2>
+                    </div>
+                </div>
+                <div class="program-content">
+                    <div class="program-description">
+                        <p>Build something that didn't exist before. Participants use AI and technology tools to create music, films, websites, digital art, and more.</p>
+                        <p>Not about becoming a "content creator"—it's about expressing ideas, solving problems, and building confidence through making.</p>
+                        <div class="program-cta">
+                            <a href="#" class="btn">view past projects</a>
+                        </div>
+                    </div>
+                    <div class="program-details">
+                        <div class="detail-item">
+                            <h4>Format</h4>
+                            <p>Project-based, 4-6 week programs</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>What You'll Make</h4>
+                            <ul>
+                                <li>Music & sound design</li>
+                                <li>Short films & videos</li>
+                                <li>Digital artwork</li>
+                                <li>Interactive websites</li>
+                                <li>Storytelling projects</li>
+                            </ul>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Skills Gained</h4>
+                            <p>Creative expression, technical literacy, problem-solving</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="program-section" id="web-design">
+                <div class="program-header">
+                    <div class="program-num">03</div>
+                    <div class="program-title">
+                        <div class="label">COMMUNITY SERVICE</div>
+                        <h2>small business web design</h2>
+                    </div>
+                </div>
+                <div class="program-content">
+                    <div class="program-description">
+                        <p>We help local small businesses build and update their websites, giving them a stronger digital presence at no cost.</p>
+                        <p>Participants put their real-world web design skills to use while directly supporting their community.</p>
+                        <div class="program-cta">
+                            <a href="#" class="btn">request website help</a>
+                        </div>
+
+                         <div class="program-cta">
+                            <a href="#" class="btn">be a website developer </a>
+                        </div>
+
+                    </div>
+                    <div class="program-details">
+                        <div class="detail-item">
+                            <h4>Who We Help</h4>
+                            <p>local businesses in Wyomissing & surrounding areas</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Services Provided</h4>
+                            <ul>
+                                <li>website creation</li>
+                                <li>website updates</li>
+                                <li>digital presence strategy</li>
+                                <li>basic SEO</li>
+                            </ul>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Timeline</h4>
+                            <p>2-4 weeks per project</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="program-section" id="language-support">
+                <div class="program-header">
+                    <div class="program-num">04</div>
+                    <div class="program-title">
+                        <div class="label">ACCESSIBILITY</div>
+                        <h2>language learning support</h2>
+                    </div>
+                </div>
+                <div class="program-content">
+                    <div class="program-description">
+                        <p>Using AI to help ESL learners and families translate concepts, practice language skills, and navigate bureaucratic tasks more easily.</p>
+                        <p>Technology as a bridge, not a replacement for human connection.</p>
+                        <div class="program-cta">
+                            <a href="#" class="btn">get language support</a>
+                        </div>
+                    </div>
+                    <div class="program-details">
+                        <div class="detail-item">
+                            <h4>Format</h4>
+                            <p>One-on-one & small group sessions</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>What We Offer</h4>
+                            <ul>
+                                <li>Translation assistance</li>
+                                <li>Language practice</li>
+                                <li>Document navigation</li>
+                                <li>Communication tools</li>
+                            </ul>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Languages</h4>
+                            <p>Spanish, Dari, Pashto, and more</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="footer-cta">
+                <h2>>> READY TO START?</h2>
+                <p>there is no charge for our programs and no experience needed.</p>
+                <div class="cta-buttons">
+                    <a href="#" class="btn btn-light">sign up now</a>
+                    <a href="get-involved.html" class="btn btn-light">volunteer with us</a>
+                </div>
+            </section>
+
+            <footer>
+                <p>© 2025 connected society | website coded by karla aguay ★</p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
