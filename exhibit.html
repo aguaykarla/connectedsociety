@@ -458,27 +458,42 @@
             transform: translateY(-2px);
         }
 
-        @media (max-width: 968px) {
-            .info-panel {
-                position: relative;
-                top: 0;
-                left: 0;
-                max-width: 100%;
-                margin: 1rem;
-            }
+@media (max-width: 968px) {
+    .info-panel {
+        position: fixed;
+        top: 90px;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        margin: 0 1rem;
+        transform: translateX(-120%);
+        transition: transform 0.3s ease;
+    }
 
-            nav {
-                padding: 1rem;
-            }
+    .info-panel.open {
+        transform: translateX(0);
+    }
 
-            .nav-links {
-                gap: 1rem;
-            }
+    .toggle-panel {
+        display: block;
+    }
 
-            .nav-links a {
-                font-size: 0.8rem;
-            }
-        }
+    .ticker {
+        display: none;
+    }
+
+    nav {
+        padding: 1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-links a {
+        font-size: 0.8rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -495,6 +510,8 @@
     <div class="success-banner" id="successBanner">
         ✓ submission received! it will appear after review.
     </div>
+
+    <button class="toggle-panel" id="toggleBtn">☰ INFO</button>
 
     <div class="exhibit-container">
         <div class="info-panel">
@@ -860,6 +877,13 @@
             document.getElementById('submitModal').classList.remove('active');
         }
 
+        window.addEventListener('load', initMap);
+    document.getElementById('toggleBtn').addEventListener('click', function() {
+    document.getElementById('infoPanel').classList.toggle('open');
+});
+    </script>
+</body>
+</html>
         window.addEventListener('load', initMap);
     </script>
 </body>
