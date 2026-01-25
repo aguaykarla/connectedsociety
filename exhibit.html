@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -78,6 +79,27 @@
             width: 100%;
             height: 100%;
             background: #0a0a0a;
+        }
+
+        .toggle-panel {
+            display: none;
+            position: fixed;
+            top: 100px;
+            left: 1rem;
+            background: rgba(10, 10, 10, 0.95);
+            border: 2px solid #ABC9FB;
+            padding: 0.8rem 1.2rem;
+            z-index: 1001;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            font-size: 1.1rem;
+            color: #ABC9FB;
+            transition: all 0.3s;
+        }
+
+        .toggle-panel:hover {
+            background: #ABC9FB;
+            color: #fff;
         }
 
         .info-panel {
@@ -185,7 +207,6 @@
             transform: translateY(-3px);
         }
 
-        /* Success Banner */
         .success-banner {
             position: fixed;
             top: 100px;
@@ -458,42 +479,46 @@
             transform: translateY(-2px);
         }
 
-@media (max-width: 968px) {
-    .info-panel {
-        position: fixed;
-        top: 90px;
-        left: 0;
-        right: 0;
-        max-width: 100%;
-        margin: 0 1rem;
-        transform: translateX(-120%);
-        transition: transform 0.3s ease;
-    }
+        @media (max-width: 968px) {
+            nav {
+                padding: 1rem;
+            }
 
-    .info-panel.open {
-        transform: translateX(0);
-    }
+            .nav-links {
+                gap: 1rem;
+            }
 
-    .toggle-panel {
-        display: block;
-    }
+            .nav-links a {
+                font-size: 0.8rem;
+            }
 
-    .ticker {
-        display: none;
-    }
+            .toggle-panel {
+                display: block;
+            }
 
-    nav {
-        padding: 1rem;
-    }
+            .info-panel {
+                position: fixed;
+                top: 90px;
+                left: 0;
+                right: 0;
+                max-width: 100%;
+                margin: 0 1rem;
+                transform: translateX(-120%);
+                transition: transform 0.3s ease;
+            }
 
-    .nav-links {
-        gap: 1rem;
-    }
+            .info-panel.open {
+                transform: translateX(0);
+            }
 
-    .nav-links a {
-        font-size: 0.8rem;
-    }
-}
+            .stats-row {
+                gap: 1rem;
+            }
+
+            .ticker {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -514,9 +539,9 @@
     <button class="toggle-panel" id="toggleBtn">☰ INFO</button>
 
     <div class="exhibit-container">
-        <div class="info-panel">
+        <div class="info-panel" id="infoPanel">
             <h1>THE AI EXHIBIT</h1>
-            <p>see how people around the world use AI to learn, create, and solve problems. All submissions are anonymous and location data is generalized to protect privacy.</p>
+            <p>see how people around the world use AI to learn, create, and solve problems. all submissions are anonymous and location data is generalized to protect privacy.</p>
             
             <div class="stats-row">
                 <div class="stat">
@@ -561,7 +586,7 @@
             <form id="submissionForm">
                 <div class="form-group">
                     <label>LOCATION (CITY/REGION)</label>
-                    <input type="text" id="locationInput" name="location" placeholder="start typing your city..." required autocomplete="off">
+                    <input type="text" id="locationInput" name="location" placeholder="start typing your area..." required autocomplete="off">
                     <div id="locationSuggestions" style="
                         background: rgba(10, 10, 10, 0.98); 
                         border: 2px solid #ABC9FB; 
@@ -674,7 +699,7 @@
                     updateTicker(allSubmissions);
                     updateLastUpdated();
                 }
-            }, 30000); // 30 seconds
+            }, 30000);
         }
 
         function renderAllMarkers(submissions) {
@@ -764,7 +789,6 @@
             tickerContent.innerHTML = items + items;
         }
 
-        // Filter functionality
         document.querySelectorAll('.filter-pill').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
@@ -877,13 +901,11 @@
             document.getElementById('submitModal').classList.remove('active');
         }
 
-        window.addEventListener('load', initMap);
-    document.getElementById('toggleBtn').addEventListener('click', function() {
-    document.getElementById('infoPanel').classList.toggle('open');
-});
-    </script>
-</body>
-</html>
+        // Mobile toggle for info panel
+        document.getElementById('toggleBtn').addEventListener('click', function() {
+            document.getElementById('infoPanel').classList.toggle('open');
+        });
+
         window.addEventListener('load', initMap);
     </script>
 </body>
