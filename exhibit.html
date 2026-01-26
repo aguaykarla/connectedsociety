@@ -762,10 +762,9 @@
                     }
                 });
 
-                markerGroups.set(key, { marker, submissions: subs });
-                marker.on('click', function() {
-    this.openPopup();
+                marker.on('click', function() { this.openPopup();
     this.setStyle({ radius: 10, fillOpacity: 1 });
+                });
             });
         }
 
