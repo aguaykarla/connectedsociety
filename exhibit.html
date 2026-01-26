@@ -560,7 +560,7 @@
                 <button class="filter-pill active" data-category="all">all</button>
                 <button class="filter-pill" data-category="education">education</button>
                 <button class="filter-pill" data-category="creativity">creativity</button>
-                <button class="filter-pill" data-category="language">life</button>
+                <button class="filter-pill" data-category="life">life</button>
                 <button class="filter-pill" data-category="work">work</button>
                 <button class="filter-pill" data-category="other">other</button>
             </div>
@@ -613,7 +613,7 @@
                         <option value="">choose one...</option>
                         <option value="education">education/learning</option>
                         <option value="creativity">creativity</option>
-                        <option value="language">life</option>
+                        <option value="life">life</option>
                         <option value="work">work/professional</option>
                         <option value="other">other</option>
                     </select>
@@ -717,17 +717,17 @@
             });
 
             locationMap.forEach((subs, key) => {
-                const firstSub = subs[0];
+            const firstSub = subs[0];
                 const marker = L.circleMarker([firstSub.lat, firstSub.lng], {
-                    radius: 7,
-                    fillColor: getCategoryColor(firstSub.category),
-                    color: '#fff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                }).addTo(map);
-
-                 markerGroups.set(key, { marker, subs });
+                radius: 7,
+                fillColor: getCategoryColor(firstSub.category),
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+        
+            markerGroups.set(key, { marker, subs });
 
                 const popupContent = `
                     <div class="popup-content">
@@ -775,7 +775,7 @@ marker.on('click', function() {
             return {
                 education: '#2196f3',
                 creativity: '#ff1493',
-                language: '#95D302',
+                life: '#95D302',
                 work: '#ABC9FB',
                 other: '#ff9800'
             }[category] || '#ff1493';
