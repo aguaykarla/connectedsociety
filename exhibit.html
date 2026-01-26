@@ -583,19 +583,20 @@
                 <button class="close-btn" onclick="closeModal()">&times;</button>
             </div>
             <form id="submissionForm">
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                     <label>LOCATION (CITY/REGION)</label>
                     <input type="text" id="locationInput" name="location" placeholder="start typing your area..." required autocomplete="off">
-                    <div id="locationSuggestions" style="
+                   <div id="locationSuggestions" style="
                         background: rgba(10, 10, 10, 0.98); 
                         border: 2px solid #ABC9FB; 
                         max-height: 250px; 
                         overflow-y: auto; 
                         display: none; 
                         position: absolute; 
-                        width: calc(100% - 6rem); 
-                        z-index: 1000;
+                        width: 100%; 
+                        z-index: 10000;
                         margin-top: 0.2rem;
+                        left: 0;
                     "></div>
                 </div>
 
@@ -892,7 +893,7 @@
             });
         }
 
-        function openModal() {
+        function openModal() {      
             document.getElementById('submitModal').classList.add('active');
         }
 
