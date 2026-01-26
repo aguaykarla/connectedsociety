@@ -727,6 +727,8 @@
                     fillOpacity: 0.8
                 }).addTo(map);
 
+                 markerGroups.set(key, { marker, subs });
+
                 const popupContent = `
                     <div class="popup-content">
                         ${subs.length > 1 ? `<div class="popup-count">${subs.length} submissions from this area</div>` : ''}
