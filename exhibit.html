@@ -580,10 +580,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2>>>> ADD YOUR AI STORY</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <button class="close-btn" id="closeModalBtn">&times;</button>
             </div>
             <form id="submissionForm">
-                <div class="form-group">
+                <div class="form-group" style="position: relative;">
                     <label>LOCATION (CITY/REGION)</label>
                     <input type="text" id="locationInput" name="location" placeholder="start typing your area..." required autocomplete="off">
                    <div id="locationSuggestions" style="
@@ -905,6 +905,11 @@
         document.getElementById('toggleBtn').addEventListener('click', function() {
             document.getElementById('infoPanel').classList.toggle('open');
         });
+
+// Close modal button
+document.getElementById('closeModalBtn').addEventListener('click', function() {
+    document.getElementById('submitModal').classList.remove('active');
+});
 
         window.addEventListener('load', initMap);
     </script>
