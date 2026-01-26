@@ -752,19 +752,20 @@
                     autoPan: true
                 });
 
-                marker.on('mouseover', function() {
-                    this.setStyle({ radius: 10, fillOpacity: 1 });
-                });
-
-                marker.on('mouseout', function() {
-                    if (!this.isPopupOpen()) {
-                        this.setStyle({ radius: 7, fillOpacity: 0.8 });
-                    }
-                });
-
-                marker.on('click', function() { this.openPopup();
+   marker.on('mouseover', function() {
     this.setStyle({ radius: 10, fillOpacity: 1 });
-                });
+});
+
+marker.on('mouseout', function() {
+    if (!this.isPopupOpen()) {
+        this.setStyle({ radius: 7, fillOpacity: 0.8 });
+    }
+});
+
+marker.on('click', function() {
+    this.openPopup();
+    this.setStyle({ radius: 10, fillOpacity: 1 });
+});
             });
         }
 
