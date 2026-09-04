@@ -524,16 +524,17 @@
 </head>
 <body>
     <nav>
-        <a href="index.html" class="logo">CONNECTED SOCIETY</a>
+        <a href="./home/index.html" class="logo">CONNECTED SOCIETY</a>
         <div class="nav-links">
             <a href="about.html">about</a>
             <a href="programs.html">programs</a>
+            <a href="exhibit.html">ai exhibit</a>
             <a href="get-involved.html">get involved</a>
         </div>
     </nav>
 
     <div class="success-banner" id="successBanner">
-        ✓ submission received! it will appear after review.
+        ✓ submission received! it will appear shortly after review.
     </div>
 
     <button class="toggle-panel" id="toggleBtn">☰ INFO</button>
@@ -541,7 +542,7 @@
     <div class="exhibit-container">
         <div class="info-panel" id="infoPanel">
             <h1>THE AI EXHIBIT</h1>
-            <p>see how people around the world use AI to learn, create, and solve problems. all submissions are anonymous and location data is generalized to protect privacy.</p>
+            <p>see how people around the world are using AI. all submissions are anonymous and location data is generalized to protect privacy.</p>
             
             <div class="stats-row">
                 <div class="stat">
@@ -565,7 +566,7 @@
                 <button class="filter-pill" data-category="other">other</button>
             </div>
 
-            <button class="add-btn" onclick="openModal()">+ ADD YOUR STORY</button>
+            <button class="add-btn" onclick="openModal()">+ ADD YOURS</button>
         </div>
 
         <div id="map"></div>
@@ -602,7 +603,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>PROMPT OR WHAT WERE YOU TRYING TO DO?</label>
+                    <label>PROMPT USED OR WHAT WERE YOU TRYING TO DO?</label>
                     <textarea name="prompt" placeholder="ex. write an email, simplify a topic, create a plan..." required></textarea>
                     <p class="form-note">share what you used AI for, be as specific as possible!</p>
                 </div>
@@ -628,9 +629,9 @@
                     <label>AGE RANGE (OPTIONAL)</label>
                     <select name="age">
                         <option value="">prefer not to say</option>
-                        <option value="youth">youth (under 18)</option>
-                        <option value="adult">adult (18-65)</option>
-                        <option value="elder">elder (65+)</option>
+                        <option value="youth">under 18</option>
+                        <option value="adult">18-65</option>
+                        <option value="elder">65+</option>
                     </select>
                 </div>
 
@@ -653,7 +654,7 @@
                 const data = await response.json();
                 return (data || []).filter(sub => sub.status === 'approved');
             } catch (error) {
-                console.error('Error loading submissions:', error);
+                console.error('error loading submissions:', error);
                 return [];
             }
         }
